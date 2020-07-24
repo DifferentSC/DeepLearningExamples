@@ -31,7 +31,7 @@ class GNMT(Seq2Seq):
     """
     GNMT v2 model
     """
-    def __init__(self, vocab_size, hidden_size=1024, num_layers=4, dropout=0.2,
+    def __init__(self, vocab_size, max_len, hidden_size=1024, num_layers=4, dropout=0.2,
                  batch_first=False, share_embedding=True):
         """
         Constructor for the GNMT v2 model.
@@ -60,7 +60,7 @@ class GNMT(Seq2Seq):
                                                 num_layers, dropout,
                                                 batch_first, embedder)
 
-        self.decoder = ResidualRecurrentDecoder(vocab_size, hidden_size,
+        self.decoder = ResidualRecurrentDecoder(vocab_size, max_len, hidden_size,
                                                 num_layers, dropout,
                                                 batch_first, embedder)
 

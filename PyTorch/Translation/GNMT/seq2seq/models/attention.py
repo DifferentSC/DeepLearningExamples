@@ -32,7 +32,7 @@ class BahdanauAttention(nn.Module):
     Bahdanau Attention (https://arxiv.org/abs/1409.0473)
     Implementation is very similar to tf.contrib.seq2seq.BahdanauAttention
     """
-    def __init__(self, query_size, key_size, num_units, normalize=False,
+    def __init__(self, query_size, key_size, num_units, max_len, normalize=False,
                  batch_first=False, init_weight=0.1):
         """
         Constructor for the BahdanauAttention.
@@ -69,6 +69,8 @@ class BahdanauAttention(nn.Module):
             self.register_parameter('normalize_bias', None)
 
         self.reset_parameters(init_weight)
+        # self.indices = torch.arange(0, max_len, dtype=torch.int64, device=)
+        self.register_buffer('indices', torch.arange(0, max_len, dtype=torch.int64))
 
     def reset_parameters(self, init_weight):
         """
@@ -97,9 +99,9 @@ class BahdanauAttention(nn.Module):
         else:
             max_len = context.size(0)
 
-        indices = torch.arange(0, max_len, dtype=torch.int64,
-                               device=context.device)
-        self.mask = indices >= (context_len.unsqueeze(1))
+        # indices = torch.arange(0, max_len, dtype=torch.int64,
+        #                       device=context.device)
+        self.mask = self.indices >= (context_len.unsqueeze(1))
 
     def calc_score(self, att_query, att_keys):
         """

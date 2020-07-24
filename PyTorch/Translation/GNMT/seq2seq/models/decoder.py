@@ -33,7 +33,7 @@ class RecurrentAttention(nn.Module):
     """
     LSTM wrapped with an attention module.
     """
-    def __init__(self, input_size=1024, context_size=1024, hidden_size=1024,
+    def __init__(self, max_len, input_size=1024, context_size=1024, hidden_size=1024,
                  num_layers=1, batch_first=False, dropout=0.2,
                  init_weight=0.1):
         """
@@ -56,7 +56,7 @@ class RecurrentAttention(nn.Module):
         init_lstm_(self.rnn, init_weight)
 
         self.attn = BahdanauAttention(hidden_size, context_size, context_size,
-                                      normalize=True, batch_first=batch_first)
+                                      max_len, normalize=True, batch_first=batch_first)
 
         self.dropout = nn.Dropout(dropout)
 
@@ -124,7 +124,7 @@ class ResidualRecurrentDecoder(nn.Module):
     Residual connections are enabled after 3rd LSTM layer, dropout is applied
     on inputs to LSTM layers.
     """
-    def __init__(self, vocab_size, hidden_size=1024, num_layers=4, dropout=0.2,
+    def __init__(self, vocab_size, max_len, hidden_size=1024, num_layers=4, dropout=0.2,
                  batch_first=False, embedder=None, init_weight=0.1):
         """
         Constructor of the ResidualRecurrentDecoder.
@@ -143,7 +143,7 @@ class ResidualRecurrentDecoder(nn.Module):
 
         self.num_layers = num_layers
 
-        self.att_rnn = RecurrentAttention(hidden_size, hidden_size,
+        self.att_rnn = RecurrentAttention(max_len, hidden_size, hidden_size,
                                           hidden_size, num_layers=1,
                                           batch_first=batch_first,
                                           dropout=dropout)
